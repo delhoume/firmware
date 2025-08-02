@@ -2,7 +2,6 @@
 #define DISPLAY_H
 
 #include <Arduino.h>
-#include "fonts.h"
 #include "DEV_Config.h"
 
 enum MSG
@@ -18,7 +17,7 @@ enum MSG
   FW_UPDATE,
   FW_UPDATE_FAILED,
   FW_UPDATE_SUCCESS,
-  BMP_FORMAT_ERROR,
+  MSG_FORMAT_ERROR,
   MAC_NOT_REGISTERED,
   TEST,
 };
@@ -64,7 +63,7 @@ uint16_t display_width();
  */
 void Paint_DrawMultilineText(UWORD x_start, UWORD y_start, const char *message,
                              uint16_t max_width, uint16_t font_width,
-                             UWORD color_fg, UWORD color_bg, sFONT *font,
+                             UWORD color_fg, UWORD color_bg, void *font,
                              bool is_center_aligned);
 
 /**
@@ -73,7 +72,16 @@ void Paint_DrawMultilineText(UWORD x_start, UWORD y_start, const char *message,
  * @param reverse shows if the color scheme is reverse
  * @return none
  */
-void display_show_image(uint8_t *image_buffer, bool reverse, bool isPNG);
+//void display_show_image(uint8_t *image_buffer, bool reverse, int data_size);
+void display_show_image(uint8_t *image_buffer, int data_size, uint8_t *image_buffer_old, int data_size_old);
+
+/**
+ * @brief Function to read an image from the file system
+ * @param filename
+ * @param pointer to file size returned
+ * @return pointer to allocated buffer
+ */
+uint8_t * display_read_file(const char *filename, int *file_size);
 
 /**
  * @brief Function to show the image with message on the display
