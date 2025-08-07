@@ -702,11 +702,12 @@ static https_request_err_e downloadAndShow()
           Log.info("%s [%d]: Stream available: %d\r\n", __FILE__, __LINE__, stream->available());
 
           uint32_t timer = millis();
-          while (stream->available() < 4000 && millis() - timer < 1000)
-            ;
+          uint32_t loop = 0;
+          while (stream->available() < 4000 && millis() - timer < 1000) { loop++; }
+
 
           Log.info("%s [%d]: Stream available: %d\r\n", __FILE__, __LINE__, stream->available());
-
+Log.info("%s [%d]: Stream available: time spend waiting %d %d millis %d loops\n", content_size, millis(), loop);
           bool isPNG = https.header("Content-Type") == "image/png";
 
           Log.info("%s [%d]: Starting a download at: %d\r\n", __FILE__, __LINE__, getTime());
