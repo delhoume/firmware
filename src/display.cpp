@@ -549,6 +549,7 @@ void display_show_image(uint8_t *image_buffer, int data_size, bool bWait)
         Log_info("%s [%d]: Forcing fast refresh (not partial) since the TRMNL refresh_rate is set to > 30 min\n", __FILE__, __LINE__);
         iRefreshMode = REFRESH_FAST;
     }
+    if (!bWait) iRefreshMode = REFRESH_PARTIAL; // fast update when showing loading screen
     Log_info("%s [%d]: EPD refresh mode: %d\r\n", __FILE__, __LINE__, iRefreshMode);
     bbep.refresh(iRefreshMode, bWait);
     if (bAlloc) {
@@ -730,7 +731,7 @@ void display_show_msg(uint8_t *image_buffer, MSG message_type)
     break;
     case FW_UPDATE_SUCCESS:
     {
-        const char string1[] = "Firmware update success. Device will restart..";
+        const char string1[] = "Firmware update success. Device will restart...";
         bbep.getStringBox(string1, &rect);
         bbep.setCursor((bbep.width() - rect.w) / 2, 400);
         bbep.print(string1);
@@ -806,13 +807,13 @@ void display_show_msg(uint8_t *image_buffer, MSG message_type, String friendly_i
     Log_info("maximum_compatibility = %d\n", apiDisplayResult.response.maximum_compatibility);
 #ifdef BB_EPAPER
     bbep.allocBuffer(false);
+    bbep.fillScreen(BBEP_WHITE);
     Log_info("Free heap after bbep.allocBuffer() - %d", ESP.getMaxAllocHeap());
 #endif
 
     if (message_type == WIFI_CONNECT)
     {
         Log_info("Display set to white");
-        bbep.fillScreen(BBEP_WHITE);
 #ifdef BB_EPAPER
         bbep.writePlane(PLANE_0);
         if (!apiDisplayResult.response.maximum_compatibility) {
