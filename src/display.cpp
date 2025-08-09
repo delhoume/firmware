@@ -506,7 +506,7 @@ void display_show_image(uint8_t *image_buffer, int data_size, bool bWait)
         }
     }
 #endif
-    if (isPNG == true && data_size < DEFAULT_IMAGE_SIZE)
+    if (isPNG == true && data_size < MAX_IMAGE_SIZE)
     {
         Log_info("Drawing PNG");
         iRefreshMode = png_to_epd(image_buffer, data_size);
