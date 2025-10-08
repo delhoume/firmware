@@ -242,7 +242,8 @@ void bl_init(void)
 
   // Mount SPIFFS
   filesystem_init();
-
+display_show_msg(storedLogoOrDefault(0), TEST);
+delay(10000);
   if (wakeup_reason != ESP_SLEEP_WAKEUP_TIMER)
   {
     Log.info("%s [%d]: Display TRMNL logo start\r\n", __FILE__, __LINE__);

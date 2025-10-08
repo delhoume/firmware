@@ -29,9 +29,20 @@ FASTEPD bbep;
 #include "png_flip.h"
 #include "../lib/bb_epaper/Fonts/Roboto_20.h"
 #include "../lib/bb_epaper/Fonts/nicoclean_8.h"
+#include "Roboto_Black_ttf.h"
 extern char filename[];
 extern Preferences preferences;
 extern ApiDisplayResult apiDisplayResult;
+#define private public
+#include <bb_truetype.h>
+
+bb_truetype bbtt;
+
+void DrawLine(int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint32_t color){
+  bbep.drawLine(x1, y1, x2, y2, (uint16_t)color); // use the line function from bb_spi_lcd
+}
+
+
 
 /**
  * @brief Function to init the display
@@ -47,6 +58,7 @@ void display_init(void)
     bbep.initPanel(BB_PANEL_EPDIY_V7);
     bbep.setPanelSize(1448, 1072);
 #endif
+    bbtt.setTtfDrawLine(DrawLine); // pass the pointer to our drawline callback function
     Log_info("dev module end");
 }
 
@@ -876,11 +888,21 @@ void display_show_msg(uint8_t *image_buffer, MSG message_type)
     break;
     case TEST:
     {
-        bbep.setCursor(0, 40);
-        bbep.println("ABCDEFGHIYABCDEFGHIYABCDEFGHIYABCDEFGHIYABCDEFGHIY");
-        bbep.println("abcdefghiyabcdefghiyabcdefghiyabcdefghiyabcdefghiy");
-        bbep.println("A B C D E F G H I Y A B C D E F G H I Y A B C D E");
-        bbep.println("a b c d e f g h i y a b c d e f g h i y a b c d e");
+        bbtt.setTextBoundary(0, bbep.width(), bbep.height());
+     bbtt.setTextColor(COLOR_NONE, BBEP_BLACK);
+   // bbtt.setTextAlignment(TEXT_ALIGN_CENTER);
+    bbtt.setTtfPointer((uint8_t *)Roboto_Black, sizeof(Roboto_Black)); // use the font from F
+    char text[] = "ABCDE";
+   int psize = 200;
+    bbtt.setCharacterSize(psize);
+    int w = bbtt.getStringWidth(text);
+    bbtt.textDraw((bbep.width() - w) / 2, (bbep.height() / 2) - 50, text);
+    psize = 28;
+    bbtt.setCharacterSize(psize);
+    char text1[] = "ABCDEFGHIacdefghi0123456789";
+    w = bbtt.getStringWidth(text1);
+    bbtt.textDraw((bbep.width() - w) / 2, (bbep.height() / 2) + 100, text1);
+
     }
     break;
     default:
