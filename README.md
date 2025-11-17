@@ -11,7 +11,7 @@ graph TB
     Init("Init peripherals")
     Start --> Init
 
-    IsLongRst{"Reset button 
+    IsLongRst{"Reset button
       pressed > 5000 ms?"}
     Init --> IsLongRst
 
@@ -73,7 +73,7 @@ graph TB
     IsSetupSuccess --> SetupError
     Sleep2(["Sleep"])
     SetupError --> Sleep2
-    
+
     %% Check update
     PingServer{"Ping server,
       success?"}
@@ -83,7 +83,7 @@ graph TB
     PingServer -->|"No"| PingError
     Sleep3(["Sleep"])
     PingError --> Sleep3
-    
+
     %% Act on update
     IsNeedReset{"Need to reset
      the device?"}
@@ -105,7 +105,7 @@ following Wifi connection via the captive portal, device swaps its Mac Address f
 GET /api/setup
 
 headers = {
-  'ID' => 'XX:XX:XX:XX:XX' # mac adddress
+  'ID' => 'XX:XX:XX:XX:XX' # mac address
 }
 
 response example (success):
@@ -171,7 +171,7 @@ if 'FW-Version' header != web server `Setting.firmware_download_url`, server wil
 if device detects an issue with response data from the `api/display` endpoint, logs are sent to server.
 
 ```curl
-POST /api/logs
+POST /api/log
 
 # example request tbd
 ```
@@ -217,17 +217,21 @@ See [releases](https://github.com/usetrmnl/firmware/releases). For older version
 
 ## **Compilation guide**
 
-A more user-friendly (and non developer) guide is available here:
-https://help.usetrmnl.com/en/articles/10271569-manually-flash-firmware
+There are technical and non-technical options to flashing firmware.
 
-If you prefer to skip the build + upload steps below, flash directly from a web browser here: https://usetrmnl.com/flash.
+**No code required**
+
+* Flash directly from a web browser: https://usetrmnl.com/flash
+* Enable OTA updates from your TRMNL dashboard > Device settings (native hardware only)
+
+**For developers**
 
 1. Install VS Code: https://code.visualstudio.com
 2. Install PlatformIO: https://platformio.org/install/ide?install=vscode
 3. Install Git: https://git-scm.com/book/en/v2/Appendix-A%3A-Git-in-Other-Environments-Git-in-Visual-Studio-Code
-4. Clone repository: https://github.com/usetrmnl/firmware
-5. After cloning, open project in VS Code workspace
-6. After configuring the project, click on the PlatformIO -> Build button located at the bottom of the screen
+4. Clone this repository: https://github.com/usetrmnl/trmnl-firmware
+5. Open project in VS Code workspace
+6. After configuring the project, click the PlatformIO -> Build button located at the bottom of the screen
 
 ![Image Alt text](/pics/build_icon.JPG "Build")
 
@@ -237,7 +241,7 @@ If you prefer to skip the build + upload steps below, flash directly from a web 
 
 8. You can find the compiled file in the folder shown in the picture.
 
-![Image Alt text](/pics/bin_folder.JPG "Bin")
+![Image Alt text](/pics/bin_folder.png "Bin")
 
 ## **Uploading guide (PlatformIO)**
 
@@ -255,10 +259,8 @@ Tools required:
 
 1. Windows OS
 2. Flash Tool 3.9.5
-3. [Firmware binary file](https://github.com/usetrmnl/firmware/tree/main/builds)
-4. [Bootloader binary file](https://github.com/usetrmnl/firmware/tree/main/builds/bin/bootloader.bin)
-5. [Partition binary file](https://github.com/usetrmnl/firmware/tree/main/builds/bin/partitions.bin)
-6. [Boot app binary file](https://github.com/usetrmnl/firmware/tree/main/builds/bin/boot_app0.bin)
+3. Binaries to merge - `bootloader.bin`, `firmware.bin`, `partitions.bin` (see Compilation Guide above)
+4. Bootloader binary file (`boot_app0.bin`, found in ~/.platformio/packages/framework-arduinoespressif32/tools/partitions/)
 
 ### Step 1 - Configure flash tool
 open the Flash Tool (executable file), select these parameters, then clickOK:
@@ -266,20 +268,20 @@ open the Flash Tool (executable file), select these parameters, then clickOK:
 ![Image Alt text](/pics/select_screen.jpg "select screen")
 
 ### Step 2 - Add binaries
-1. Beside the top blank space, click “...” dots and select the bootloader binary file then input 
-> “0x00000000” 
+1. Beside the top blank space, click “...” dots and select the bootloader binary file then input
+> “0x00000000”
 in the far right space and check the box.
 
-2. Click “...” dots and select the partitions binary file then input 
-> “0x00008000” 
+2. Click “...” dots and select the partitions binary file then input
+> “0x00008000”
 in the far right space and check the box.
 
-3. Click “...” dots and select the boot_app0 binary file then input 
-> “0x0000e000” 
+3. Click “...” dots and select the boot_app0 binary file then input
+> “0x0000e000”
 in the far right space and check the box.
 
-4. Click “...” dots and select the firmware binary file then input 
-> “0x00010000” 
+4. Click “...” dots and select the firmware binary file then input
+> “0x00010000”
 in the far right space and check the box.
 
 ![Image Alt text](/pics/binaries.jpg "binaries")
@@ -296,7 +298,7 @@ finally, set the following parameters at the bottom of the Flash Tool interface:
 2. Next, connect the PCB to the Windows machine with a USB-C cable. make sure the USB port is on the right, and that the PCB’s on/off switch is toggled DOWN for “off.”
 
 3. While holding the BOOT button (below the on/off toggle), toggle the device ON by flipping the above switch UP. you may hear a sound from your Windows machine Inspect the Device Manager connections at the bottom of the interface, and a new device should appear. it may be “USB Component {{ Num }},” or something like below:
- 
+
 ![Image Alt text](/pics/select_device.jpg "select_device")
 
 4. Take note of this device’s name, that is our TRMNL PCB. then back inside the Flash Tool, click to open the “COM” dropdown in the bottom right and choose the TRMNL PCB. finally, click the “START” button.
